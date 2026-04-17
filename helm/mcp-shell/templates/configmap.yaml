@@ -1,0 +1,11 @@
+{{- if .Values.securityConfig }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mcp-shell.fullname" . }}-security
+  labels:
+    {{- include "mcp-shell.labels" . | nindent 4 }}
+data:
+  security.yaml: |
+    {{ .Values.securityConfig | nindent 4 }}
+{{- end }}

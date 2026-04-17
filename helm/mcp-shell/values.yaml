@@ -1,0 +1,84 @@
+# Default values for mcp-shell
+replicaCount: 1
+
+image:
+  repository: docker.io/weiyuanke/mcp-shell
+  pullPolicy: IfNotPresent
+  tag: "v0.5.3"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+# Security configuration - raw content for security.yaml
+# This will be mounted as /etc/mcp-shell/security.yaml
+securityConfig: |
+  # Secure MCP Shell Configuration
+  # This configuration uses the new secure execution model that prevents command injection
+  security:
+    # Enable security features
+    enabled: false
+
+    # Use secure execution (disable shell interpretation)
+    # This prevents command injection through shell metacharacters
+    use_shell_execution: true
+
+    # Allowed executables - only these commands can be executed
+    # Use absolute paths for maximum security, or command names for PATH lookup
+    allowed_executables:
+      - "ls"
+      - "pwd"
+      - "whoami"
+      - "date"
+      - "echo"
+      - "cat"
+      - "grep"
+      - "find"
+      - "wc"
+      - "head"
+      - "tail"
+      - "sort"
+      - "uniq"
+      - "/usr/bin/git"
+      - "/usr/bin/python3"
+      - "/bin/bash"  # Only allow if you trust the arguments
+
+    # Legacy settings (deprecated but kept for backwards compatibility)
+    # These are ignored when use_shell_execution is false
+    allowed_commands: []
+    blocked_commands: []
+    blocked_patterns: []
+
+    # Execution limits
+    max_execution_time: "300s"
+    max_output_size: 1048576  # 1MB
+
+    # Security context
+    working_directory: "/tmp"
+    run_as_user: ""  # Leave empty to run as current user
+
+    # Logging
+    audit_log: true
+
+affinity: {}
