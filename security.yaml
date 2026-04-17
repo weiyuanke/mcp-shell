@@ -2,12 +2,12 @@
 # This configuration uses the new secure execution model that prevents command injection
 security:
   # Enable security features
-  enabled: true
-  
+  enabled: false
+
   # Use secure execution (disable shell interpretation)
   # This prevents command injection through shell metacharacters
-  use_shell_execution: false
-  
+  use_shell_execution: true
+
   # Allowed executables - only these commands can be executed
   # Use absolute paths for maximum security, or command names for PATH lookup
   allowed_executables:
@@ -27,20 +27,20 @@ security:
     - "/usr/bin/git"
     - "/usr/bin/python3"
     - "/bin/bash"  # Only allow if you trust the arguments
-  
+
   # Legacy settings (deprecated but kept for backwards compatibility)
   # These are ignored when use_shell_execution is false
   allowed_commands: []
   blocked_commands: []
   blocked_patterns: []
-  
+
   # Execution limits
-  max_execution_time: "30s"
+  max_execution_time: "300s"
   max_output_size: 1048576  # 1MB
-  
+
   # Security context
   working_directory: "/tmp"
   run_as_user: ""  # Leave empty to run as current user
-  
+
   # Logging
   audit_log: true

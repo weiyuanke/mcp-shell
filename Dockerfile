@@ -41,8 +41,17 @@ RUN apk add --no-cache \
     tar \
     gzip \
     unzip \
+    npm \
     ca-certificates \
     && rm -rf /var/cache/apk/*
+
+# mcp-proxy
+RUN npm install -g mcp-proxy
+
+# kubectl
+RUN curl -LO "https://dl.k8s.io/release/v1.35.0/bin/linux/amd64/kubectl" \
+    && chmod +x kubectl \
+    && mv kubectl /usr/local/bin/
 
 # Create non-root user for security
 RUN addgroup -g 1000 mcpuser && \
@@ -63,7 +72,6 @@ RUN chmod +x /usr/local/bin/mcp-shell
 # Copy example security config
 COPY security.yaml /etc/mcp-shell/security.yaml
 
-
 # Set environment
 ENV MCP_SHELL_SEC_CONFIG_FILE=/etc/mcp-shell/security.yaml
 ENV PATH="/usr/local/bin:${PATH}"
@@ -76,4 +84,4 @@ WORKDIR /tmp/mcp-workspace
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD echo '{"jsonrpc": "2.0", "method": "ping", "id": 1}' | timeout 2 mcp-shell || exit 1
 
-ENTRYPOINT ["mcp-shell"]
+ENTRYPOINT ["mcp-proxy", "--port", "8080", "--", "/usr/local/bin/mcp-shell"]
